@@ -10,33 +10,12 @@ const accessToken = process.env.ACCESS_TOKEN || ''
 const contentful = createClient({ space, accessToken })
 
 const imageLoader = ({ src, width, quality }) => {
-  return `https:${src}?w=650&q=50`
+  let modifiedSrc = src.replace("downloads", "images");
+
+  return `https:${modifiedSrc}?h=900&q=25`
 }
 
 export default function ScorePage({ album, slug }) {
-  const first = []
-  const second = []
-
-  let albumImages = album.fields.images
-
-  albumImages = albumImages.sort((a, b) => b.fields.file.details.image.height - a.fields.file.details.image.height)
-
-  albumImages.sort()
-
-  for (let i = 0; i < albumImages.length; i += 2) {
-    const firstElement = albumImages[i]
-    const secondElement = albumImages[i + 1]
-
-    if (firstElement !== undefined) {
-      first.push(firstElement)
-    }
-
-    if (secondElement !== undefined) {
-      second.push(secondElement)
-    }
-  }
-
-
   return (
     <div className='container w-full min-h-screen flex flex-col gap-3 items-center py-14'>
       <h1 className='text-5xl font-extrabold tracking-wide'>
