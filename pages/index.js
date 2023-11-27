@@ -11,6 +11,7 @@ export async function getStaticProps() {
 
   const albumRes = await contentful.getEntries({
     content_type: 'photoAlbum',
+    order: '-fields.date',
   })
 
   const albums = albumRes?.items

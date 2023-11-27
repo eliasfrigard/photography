@@ -3,7 +3,8 @@ import React, { useEffect } from 'react'
 import '../../app/globals.css'
 import Image from "next/image"
 import Moment from 'react-moment'
-import AnimateIn from '../../components/Animate'
+
+import { BsCalendar2CheckFill, BsPinMapFill } from "react-icons/bs"
 
 import { createClient } from 'contentful'
 
@@ -19,6 +20,7 @@ const imageLoader = ({ src, width, quality }) => {
 }
 
 export default function ScorePage({ album, slug }) {
+  console.log('🚀 || file: [slug].js:23 || ScorePage || album:', album)
   const [animate, setAnimate] = React.useState(false)
 
   useEffect(() => {
@@ -26,15 +28,28 @@ export default function ScorePage({ album, slug }) {
   }, [])
 
   return (
-    <div className='container w-full min-h-screen flex flex-col gap-3 items-center py-14'>
-      <h1 className='text-5xl font-extrabold tracking-wide'>
+    <div className='container w-full min-h-screen flex flex-col gap-4 items-center py-14'>
+      <h1 className='text-6xl font-extrabold tracking-wide'>
         {album.fields.title}
       </h1>
-      <Moment format='D MMMM YYYY' className='text-lg tracking-wider font-bold'>
-        {album.fields.date}
-      </Moment>
 
-      <div className='mt-8 w-full h-full grid grid-cols-3 gap-4'>
+      <div className='flex gap-6 flex-wrap'>
+        <div className='flex justify-center items-center gap-3'>
+          <BsCalendar2CheckFill className='text-black' />
+          <Moment format='D MMMM YYYY' className='tracking-wider font-bold'>
+            {album.fields.date}
+          </Moment>
+        </div>
+
+        <div className='flex justify-center items-center gap-3'>
+          <BsPinMapFill className='text-black' />
+          <p className='tracking-wider font-bold'>
+            {album.fields.location}
+          </p>
+        </div>
+      </div>
+
+      <div className='mt-10 w-full h-full grid grid-cols-3 gap-4'>
         {
           album.fields.images.map((image, index) => {
             const delay = `${index * 200}ms`
@@ -49,7 +64,7 @@ export default function ScorePage({ album, slug }) {
                   src={image.fields.file.url}
                   fill
                   sizes="(min-width: 768px) 80vw, 100vw"
-                  className='object-cover'
+                  className='object-cover hover:scale-[1.025] duration-300 cursor-pointer'
                   placeholder='blur'
                   blurDataURL={'http:' + image.fields.file.url + '?w=162&q=10'}
                 />

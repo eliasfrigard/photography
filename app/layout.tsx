@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
-import { Josefin_Sans } from 'next/font/google'
 import './globals.css'
 
-const inter = Josefin_Sans({
+import { Open_Sans } from 'next/font/google'
+ 
+const inter = Open_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-open',
 })
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-inter`}>{children}</body>
+      <body className={`${inter.variable} font-open`}>{children}</body>
     </html>
   )
 }

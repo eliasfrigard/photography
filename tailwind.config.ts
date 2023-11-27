@@ -12,9 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['var(--font-inter)', 'sans'],
-        body: ['var(--font-inter)', 'sans'],
-        inter: ['var(--font-inter)'],
+        open: ['var(--font-open)'],
       },
       aspectRatio: {
         '3/4': '3 / 4',
@@ -29,6 +27,6 @@ const config: Config = {
       center: true,
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 }
 export default config
