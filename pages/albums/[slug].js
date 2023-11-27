@@ -28,7 +28,7 @@ export default function ScorePage({ album, slug }) {
       <div className='mt-8 w-full h-full grid grid-cols-3 gap-4'>
         {
           album.fields.images.map(image => (
-            <div key={image.sys.id} className='relative w-full aspect-3/4 rounded-lg overflow-hidden'>
+            <div key={image.sys.id} className='relative w-full aspect-3/4 rounded-lg overflow-hidden shadow-lg'>
               <Image
                 loader={imageLoader}
                 alt={image.fields.title}
