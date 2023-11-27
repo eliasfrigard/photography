@@ -12,7 +12,7 @@ const contentful = createClient({ space, accessToken })
 const imageLoader = ({ src, width, quality }) => {
   let modifiedSrc = src.replace("downloads", "images");
 
-  return `https:${modifiedSrc}?h=900&q=25`
+  return `https:${modifiedSrc}?h=900&w=1200&q=25`
 }
 
 export default function ScorePage({ album, slug }) {
