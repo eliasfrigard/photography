@@ -1,6 +1,9 @@
+import React, { useEffect } from 'react'
+
 import '../../app/globals.css'
 import Image from "next/image"
 import Moment from 'react-moment'
+import AnimateIn from '../../components/Animate'
 
 import { createClient } from 'contentful'
 
@@ -16,6 +19,12 @@ const imageLoader = ({ src, width, quality }) => {
 }
 
 export default function ScorePage({ album, slug }) {
+  const [animate, setAnimate] = React.useState(false)
+
+  useEffect(() => {
+    setAnimate(true)
+  }, [])
+
   return (
     <div className='container w-full min-h-screen flex flex-col gap-3 items-center py-14'>
       <h1 className='text-5xl font-extrabold tracking-wide'>
@@ -27,23 +36,29 @@ export default function ScorePage({ album, slug }) {
 
       <div className='mt-8 w-full h-full grid grid-cols-3 gap-4'>
         {
-          album.fields.images.map(image => (
-            <div key={image.sys.id} className='relative w-full aspect-3/4 rounded-lg overflow-hidden shadow-lg'>
-              <Image
-                loader={imageLoader}
-                alt={image.fields.title}
-                src={image.fields.file.url}
-                fill
-                sizes="(min-width: 768px) 80vw, 100vw"
-                className='object-cover'
-                placeholder='blur'
-                blurDataURL={'http:' + image.fields.file.url + '?w=162&q=10'}
-              />
-            </div>
-          ))
+          album.fields.images.map((image, index) => {
+            const delay = `${index * 200}ms`
+
+            const classes = `relative w-full aspect-3/4 rounded-lg overflow-hidden shadow-lg duration-[600ms] ${animate ? 'opacity-100' : 'opacity-0'} ease-in`
+
+            return (
+              <div key={image.sys.id} className={classes} style={{ transitionDelay: delay }} >
+                <Image
+                  loader={imageLoader}
+                  alt={image.fields.title}
+                  src={image.fields.file.url}
+                  fill
+                  sizes="(min-width: 768px) 80vw, 100vw"
+                  className='object-cover'
+                  placeholder='blur'
+                  blurDataURL={'http:' + image.fields.file.url + '?w=162&q=10'}
+                />
+              </div>
+            )
+          })
         }
       </div>
-    </div>
+    </div >
   )
 }
 
