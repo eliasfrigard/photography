@@ -17,13 +17,13 @@ const contentful = createClient({ space, accessToken })
 const imageLoader = ({ src, width, quality }) => {
   let modifiedSrc = src.replace("downloads", "images");
 
-  return `https:${modifiedSrc}?h=900&w=1200&q=25`
+  return `https:${modifiedSrc}?h=900&w=${width}&q=${quality}`
 }
 
 const fullImageLoader = ({ src, width, quality }) => {
   let modifiedSrc = src.replace("downloads", "images");
 
-  return `https:${modifiedSrc}?q=75`
+  return `https:${modifiedSrc}?w=${width}&q=${quality}`
 }
 
 export default function ScorePage({ album, slug }) {
@@ -86,6 +86,7 @@ export default function ScorePage({ album, slug }) {
                   className='object-cover hover:scale-[1.025] duration-300 cursor-pointer'
                   placeholder='blur'
                   blurDataURL={'http:' + image.fields.file.url + '?w=162&q=10'}
+                  quality={25}
                 />
               </div>
             )
@@ -105,6 +106,7 @@ export default function ScorePage({ album, slug }) {
             <Image
               alt="nature"
               fill
+              quality={75}
               loader={fullImageLoader}
               className="object-fit h-[48rem] w-full object-center"
               src={selectedImage.fields.file.url}
