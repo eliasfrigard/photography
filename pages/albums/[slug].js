@@ -99,10 +99,10 @@ export default function ScorePage({ album, slug }) {
         onClose={handleCloseModal}
         className="relative z-50"
       >
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+        <div className="fixed inset-0 bg-black/30 backdrop-blur" aria-hidden="true" />
 
         <div className="fixed inset-0 flex w-screen items-center justify-center py-12 px-24">
-          <Dialog.Panel className="rounded-lg relative h-full overflow-hidden shadow-2xl" style={{ aspectRatio: ratio }}>
+          <Dialog.Panel className="rounded-lg relative h-full overflow-hidden" style={{ aspectRatio: ratio }}>
             <Image
               alt="nature"
               fill
