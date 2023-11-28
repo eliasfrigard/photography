@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import { getPlaiceholder } from 'plaiceholder'
 
 import '../../app/globals.css'
 import Image from "next/image"
@@ -26,7 +27,7 @@ const fullImageLoader = ({ src, width, quality }) => {
   return `https:${modifiedSrc}?w=${width}&q=${quality}`
 }
 
-export default function ScorePage({ album, slug }) {
+export default function ScorePage({ album, slug, images }) {
   const [animate, setAnimate] = React.useState(false)
   const [ratio, setRatio] = React.useState('1/1')
   const [selectedImage, setSelectedImage] = React.useState(album.fields.images[0])
@@ -34,7 +35,7 @@ export default function ScorePage({ album, slug }) {
   const [open, setOpen] = React.useState(false)
 
   const handleImageOpen = (imageIndex) => {
-    setSelectedImage(album.fields.images[imageIndex])
+    setSelectedImage(images[imageIndex])
     setOpen(true)
   }
 
@@ -70,7 +71,7 @@ export default function ScorePage({ album, slug }) {
 
       <div className='mt-10 w-full h-full grid grid-cols-3 gap-4'>
         {
-          album.fields.images.map((image, index) => {
+          images.map((image, index) => {
             const delay = `${index * 200}ms`
 
             const classes = `relative w-full aspect-3/4 rounded-lg overflow-hidden shadow-lg duration-[600ms] ${animate ? 'opacity-100' : 'opacity-0'} ease-in`
@@ -85,7 +86,7 @@ export default function ScorePage({ album, slug }) {
                   sizes="(min-width: 768px) 80vw, 100vw"
                   className='object-cover hover:scale-[1.025] duration-300 cursor-pointer'
                   placeholder='blur'
-                  blurDataURL={'http:' + image.fields.file.url + '?w=162&q=10'}
+                  blurDataURL={image.blur}
                   quality={25}
                 />
               </div>
@@ -113,6 +114,8 @@ export default function ScorePage({ album, slug }) {
               onLoad={(e) => {
                 setRatio(e.target.naturalWidth / e.target.naturalHeight)
               }}
+              placeholder='blur'
+              blurDataURL={selectedImage.blur}
             />
           </Dialog.Panel>
         </div>
@@ -147,10 +150,28 @@ export async function getStaticProps({ params: { slug } }) {
 
   const album = albumRes?.items.find(a => a.fields.title.toLowerCase().replace(' ', '-') === slug)
 
+  const images = []
+
+  for (const image of album.fields.images) {
+    const src = 'https:' + image.fields.file.url
+
+    const buffer = await fetch(src).then(async (res) =>
+      Buffer.from(await res.arrayBuffer())
+    )
+
+    const { base64 } = await getPlaiceholder(buffer)
+
+    images.push({
+      ...image,
+      blur: base64
+    })
+  }
+
   return {
     props: {
       slug,
       album,
+      images,
     },
   }
 }
