@@ -132,8 +132,8 @@ export default function ScorePage({ album, slug, images }) {
                   fill
                   sizes="(min-width: 768px) 80vw, 100vw"
                   className='object-cover hover:scale-[1.025] duration-300 cursor-pointer'
-                  placeholder='blur'
-                  blurDataURL={image.blur}
+                  placeholder={image?.blur ? 'blur' : 'empty'}
+                  blurDataURL={image?.blur}
                   quality={25}
                 />
               </div>
@@ -152,15 +152,16 @@ export default function ScorePage({ album, slug, images }) {
         <div className="fixed inset-0 flex w-screen items-center justify-center py-12 px-24">
           <Dialog.Panel className={`${loading ? 'animate-pulse' : 'animate-none'} rounded-lg relative h-full overflow-hidden flex justify-center items-center`} style={{ aspectRatio: ratio }}>
             <Image
+              priority
               alt="nature"
               fill
               quality={75}
               loader={fullImageLoader}
               className={`object-fit h-[48rem] w-full object-center`}
               src={selectedImage.fields.file.url}
-              placeholder='blur'
               onLoad={() => setLoading(false)}
-              blurDataURL={selectedImage.blur}
+              placeholder={selectedImage?.blur ? 'blur' : 'empty'}
+              blurDataURL={selectedImage?.blur}
             />
           </Dialog.Panel>
         </div>
@@ -193,30 +194,34 @@ export async function getStaticProps({ params: { slug } }) {
     content_type: 'photoAlbum',
   })
 
+  console.log(process.env.NODE_ENV)
+
   const album = albumRes?.items.find(a => a.fields.title.toLowerCase().replace(' ', '-') === slug)
 
   const images = []
 
-  for (const image of album.fields.images) {
-    const src = 'https:' + image.fields.file.url
+  if (process.env.NODE_ENV !== 'development') {
+    for (const image of album.fields.images) {
+      const src = 'https:' + image.fields.file.url
 
-    const buffer = await fetch(src).then(async (res) =>
-      Buffer.from(await res.arrayBuffer())
-    )
+      const buffer = await fetch(src).then(async (res) =>
+        Buffer.from(await res.arrayBuffer())
+      )
 
-    const { base64 } = await getPlaiceholder(buffer)
+      const { base64 } = await getPlaiceholder(buffer)
 
-    images.push({
-      ...image,
-      blur: base64
-    })
+      images.push({
+        ...image,
+        blur: base64
+      })
+    }
   }
 
   return {
     props: {
       slug,
       album,
-      images,
+      images: images.length > 0 ? images : album.fields.images,
     },
   }
 }
