@@ -35,18 +35,57 @@ export default function ScorePage({ album, slug, images }) {
   const [selectedImage, setSelectedImage] = React.useState(album.fields.images[0])
   const [open, setOpen] = React.useState(false)
 
+  const handleLeftArrow = React.useCallback(() => {
+    const currentIndex = images.indexOf(selectedImage)
+    const newIndex = currentIndex - 1
+
+    if (newIndex >= 0) {
+      setSelectedImage(images[newIndex])
+    }
+  }, [images, selectedImage])
+
+  const handleRightArrow = React.useCallback(() => {
+    const currentIndex = images.indexOf(selectedImage)
+    const newIndex = currentIndex + 1
+
+    if (newIndex < images.length) {
+      setSelectedImage(images[newIndex])
+    }
+  }, [images, selectedImage])
+
+  const handleKeyPress = React.useCallback((event) => {
+    if (!open) return
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        handleLeftArrow()
+        break
+      case 'ArrowRight':
+        handleRightArrow()
+        break
+      default:
+        break
+    }
+  }, [open, handleLeftArrow, handleRightArrow])
+
   const handleImageOpen = (imageIndex) => {
     setSelectedImage(images[imageIndex])
     setOpen(true)
   }
 
-  const handleCloseModal = (imageIndex) => {
+  const handleCloseModal = () => {
     setOpen(false)
   }
 
   useEffect(() => {
     setAnimate(true)
-  }, [])
+
+    window.addEventListener('keydown', handleKeyPress)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [setAnimate, handleKeyPress])
 
   useEffect(() => {
     setLoading(true)
