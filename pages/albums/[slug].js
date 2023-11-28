@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { getPlaiceholder } from 'plaiceholder'
+import { Spinner } from "@material-tailwind/react";
 
 import '../../app/globals.css'
 import Image from "next/image"
@@ -30,8 +31,8 @@ const fullImageLoader = ({ src, width, quality }) => {
 export default function ScorePage({ album, slug, images }) {
   const [animate, setAnimate] = React.useState(false)
   const [ratio, setRatio] = React.useState('1/1')
+  const [loading, setLoading] = React.useState(false)
   const [selectedImage, setSelectedImage] = React.useState(album.fields.images[0])
-  const [opacity, setOpacity] = React.useState('opacity-50')
   const [open, setOpen] = React.useState(false)
 
   const handleImageOpen = (imageIndex) => {
@@ -48,7 +49,7 @@ export default function ScorePage({ album, slug, images }) {
   }, [])
 
   useEffect(() => {
-    setOpacity('opacity-50')
+    setLoading(true)
     const fileHeight = selectedImage.fields.file.details.image.height
     const fileWidth = selectedImage.fields.file.details.image.width
     setRatio(fileWidth / fileHeight)
@@ -110,16 +111,16 @@ export default function ScorePage({ album, slug, images }) {
         <div className="fixed inset-0 bg-black/30 backdrop-blur" aria-hidden="true" />
 
         <div className="fixed inset-0 flex w-screen items-center justify-center py-12 px-24">
-          <Dialog.Panel className="rounded-lg relative h-full overflow-hidden" style={{ aspectRatio: ratio }}>
+          <Dialog.Panel className={`${loading ? 'animate-pulse' : 'animate-none'} rounded-lg relative h-full overflow-hidden flex justify-center items-center`} style={{ aspectRatio: ratio }}>
             <Image
               alt="nature"
               fill
               quality={75}
               loader={fullImageLoader}
-              className={`object-fit h-[48rem] w-full object-center ${opacity}`}
+              className={`object-fit h-[48rem] w-full object-center`}
               src={selectedImage.fields.file.url}
               placeholder='blur'
-              onLoad={() => setOpacity('opacity-100')}
+              onLoad={() => setLoading(false)}
               blurDataURL={selectedImage.blur}
             />
           </Dialog.Panel>
