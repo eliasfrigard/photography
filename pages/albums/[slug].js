@@ -153,13 +153,14 @@ export default function ScorePage({ album, slug, images }) {
           <Dialog.Panel className={`${loading ? 'animate-pulse' : 'animate-none'} rounded-lg relative h-full overflow-hidden flex justify-center items-center`} style={{ aspectRatio: ratio }}>
             <Image
               priority
-              alt="nature"
-              fill
-              quality={75}
               loader={fullImageLoader}
-              className={`object-fit h-[48rem] w-full object-center`}
-              src={selectedImage.fields.file.url}
               onLoad={() => setLoading(false)}
+              className={`w-full`}
+              alt={selectedImage.fields.title}
+              src={selectedImage.fields.file.url}
+              quality={75}
+              height={selectedImage.fields.file.details.image.height}
+              width={selectedImage.fields.file.details.image.width}
               placeholder={selectedImage?.blur ? 'blur' : 'empty'}
               blurDataURL={selectedImage?.blur}
             />
@@ -193,8 +194,6 @@ export async function getStaticProps({ params: { slug } }) {
   const albumRes = await contentful.getEntries({
     content_type: 'photoAlbum',
   })
-
-  console.log(process.env.NODE_ENV)
 
   const album = albumRes?.items.find(a => a.fields.title.toLowerCase().replace(' ', '-') === slug)
 
