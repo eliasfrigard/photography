@@ -31,7 +31,7 @@ export default function ScorePage({ album, slug, images }) {
   const [animate, setAnimate] = React.useState(false)
   const [ratio, setRatio] = React.useState('1/1')
   const [selectedImage, setSelectedImage] = React.useState(album.fields.images[0])
-
+  const [opacity, setOpacity] = React.useState('opacity-50')
   const [open, setOpen] = React.useState(false)
 
   const handleImageOpen = (imageIndex) => {
@@ -46,6 +46,13 @@ export default function ScorePage({ album, slug, images }) {
   useEffect(() => {
     setAnimate(true)
   }, [])
+
+  useEffect(() => {
+    setOpacity('opacity-50')
+    const fileHeight = selectedImage.fields.file.details.image.height
+    const fileWidth = selectedImage.fields.file.details.image.width
+    setRatio(fileWidth / fileHeight)
+  }, [selectedImage])
 
   return (
     <div className='container text-center w-full min-h-screen flex flex-col gap-4 items-center py-14'>
@@ -109,12 +116,10 @@ export default function ScorePage({ album, slug, images }) {
               fill
               quality={75}
               loader={fullImageLoader}
-              className="object-fit h-[48rem] w-full object-center"
+              className={`object-fit h-[48rem] w-full object-center ${opacity}`}
               src={selectedImage.fields.file.url}
-              onLoad={(e) => {
-                setRatio(e.target.naturalWidth / e.target.naturalHeight)
-              }}
               placeholder='blur'
+              onLoad={() => setOpacity('opacity-100')}
               blurDataURL={selectedImage.blur}
             />
           </Dialog.Panel>
