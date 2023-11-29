@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { getPlaiceholder } from 'plaiceholder'
-import { Spinner } from "@material-tailwind/react";
 
 import '../../app/globals.css'
 import Image from "next/image"
 import Moment from 'react-moment'
 
-import { BsCalendar2CheckFill, BsPinMapFill } from "react-icons/bs"
+import { BsCalendar2CheckFill, BsPinMapFill, BsXLg, BsShareFill, BsCloudDownloadFill } from "react-icons/bs"
 
 import { createClient } from 'contentful'
 
@@ -89,14 +88,18 @@ export default function ScorePage({ album, slug, images }) {
 
   useEffect(() => {
     setLoading(true)
+  }, [selectedImage])
+
+  useEffect(() => {
     const fileHeight = selectedImage.fields.file.details.image.height
     const fileWidth = selectedImage.fields.file.details.image.width
+
     setRatio(fileWidth / fileHeight)
   }, [selectedImage])
 
   return (
     <div className='container text-center w-full min-h-screen flex flex-col gap-4 items-center py-14'>
-      <h1 className='text-6xl font-extrabold tracking-wide leading-[4.5rem]'>
+      <h1 className='text-4xl md:text-6xl font-extrabold tracking-wide leading-snug break-normal'>
         {album.fields.title}
       </h1>
 
@@ -121,7 +124,7 @@ export default function ScorePage({ album, slug, images }) {
           images.map((image, index) => {
             const delay = `${index * 200}ms`
 
-            const classes = `relative w-full aspect-3/4 rounded-lg overflow-hidden shadow-lg duration-[600ms] ${animate ? 'opacity-100' : 'opacity-0'} ease-in`
+            const classes = `relative w-full aspect-square rounded-lg overflow-hidden shadow-lg duration-[600ms] ${animate ? 'opacity-100' : 'opacity-0'} ease-in`
 
             return (
               <div onClick={() => handleImageOpen(index)} key={image.sys.id} className={classes} style={{ transitionDelay: delay }} >
@@ -149,8 +152,8 @@ export default function ScorePage({ album, slug, images }) {
       >
         <div className="fixed inset-0 bg-black/30 backdrop-blur" aria-hidden="true" />
 
-        <div className="fixed inset-0 flex w-screen items-center justify-center py-12 px-24">
-          <Dialog.Panel className={`${loading ? 'animate-pulse' : 'animate-none'} rounded-lg relative h-full overflow-hidden flex justify-center items-center`} style={{ aspectRatio: ratio }}>
+        <div className="fixed inset-0 flex w-screen items-center justify-center py-4 px-4 md:py-10 md:px-16">
+          <Dialog.Panel className={`${loading ? 'animate-pulse' : 'animate-none'} rounded-lg relative max-h-full overflow-hidden flex justify-center items-center shadow-xl`} style={{ aspectRatio: ratio }}>
             <Image
               priority
               loader={fullImageLoader}
@@ -164,6 +167,16 @@ export default function ScorePage({ album, slug, images }) {
               placeholder={selectedImage?.blur ? 'blur' : 'empty'}
               blurDataURL={selectedImage?.blur}
             />
+
+            {
+              !loading && (
+                <div className='absolute top-5 right-5 flex text-white text-2xl gap-5 p-3 bg-neutral-900 rounded-lg opacity-100 hover:opacity-100 duration-300 bg-opacity-90'>
+                  <BsCloudDownloadFill />
+                  <BsShareFill />
+                  <BsXLg />
+                </div>
+              )
+            }
           </Dialog.Panel>
         </div>
       </Dialog>

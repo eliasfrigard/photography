@@ -25,7 +25,7 @@ export async function getStaticProps() {
 
 export default function Albums({ albums }) {
   return (
-    <div className="container min-h-screen w-full py-16 grid grid-cols-3 gap-8">
+    <div className="container min-h-screen py-16 grid grid-cols-3 gap-6">
       {
         albums.map((album) => {
           return <Album key={album.sys.id} title={album.fields.title} imageUrl={'https:' + album.fields.images[0].fields.file.url} date={album.fields.date}></Album>
